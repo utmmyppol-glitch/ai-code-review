@@ -301,9 +301,12 @@ public class CodeReviewService {
     public com.bomin.codereview.dto.ReviewDto.StatsResponse getStats() {
         long totalPrs = em.createQuery("SELECT COUNT(p) FROM PullRequest p", Long.class).getSingleResult();
         long totalComments = em.createQuery("SELECT COUNT(c) FROM ReviewComment c", Long.class).getSingleResult();
-        long high = em.createQuery("SELECT COUNT(p) FROM PullRequest p WHERE p.riskLevel = 'HIGH'", Long.class).getSingleResult();
-        long medium = em.createQuery("SELECT COUNT(p) FROM PullRequest p WHERE p.riskLevel = 'MEDIUM'", Long.class).getSingleResult();
-        long low = em.createQuery("SELECT COUNT(p) FROM PullRequest p WHERE p.riskLevel = 'LOW'", Long.class).getSingleResult();
+        long high = em.createQuery("SELECT COUNT(p) FROM PullRequest p WHERE p.riskLevel = :level", Long.class)
+                .setParameter("level", PullRequest.RiskLevel.HIGH).getSingleResult();
+        long medium = em.createQuery("SELECT COUNT(p) FROM PullRequest p WHERE p.riskLevel = :level", Long.class)
+                .setParameter("level", PullRequest.RiskLevel.MEDIUM).getSingleResult();
+        long low = em.createQuery("SELECT COUNT(p) FROM PullRequest p WHERE p.riskLevel = :level", Long.class)
+                .setParameter("level", PullRequest.RiskLevel.LOW).getSingleResult();
 
         return com.bomin.codereview.dto.ReviewDto.StatsResponse.builder()
                 .totalPrs(totalPrs)
